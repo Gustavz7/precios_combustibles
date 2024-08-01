@@ -1,9 +1,14 @@
-<div *ngIf="combustiblesInfo; else cargando">
-  <ul *ngFor="let combustible of combustiblesInfo; let i = index">
-    <li> {{ combustible.nombre }}</li>
-    <li> {{ combustible.precio | currency}}</li>
-    <li> {{ combustible.fecha_actualizacion | date}}</li>
-  </ul>
-</div>
+<div class="prices-component">
+  <p>esto es un titulo</p>
+  <div class="prices-info-container">
+    <div class="price-info" *ngIf="combustiblesInfo; else cargando">
+      <ul *ngFor="let combustible of combustiblesInfo; let i = index">
+        <li>{{ combustible.nombre }}</li>
+        <li>{{ combustible.precio | currency }}</li>
+        <li>{{ combustible.fecha_actualizacion | date }}</li>
+      </ul>
+    </div>
 
-<ng-template #cargando> cargando.. </ng-template>
+    <ng-template class="price-info" #cargando> cargando.. </ng-template>
+  </div>
+</div>

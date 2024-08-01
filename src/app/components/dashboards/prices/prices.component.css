@@ -1,0 +1,32 @@
+.prices-component {
+  z-index: 5;
+  color: white;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: transparent;
+
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+
+  width: 40vh;
+  height: 80vh;
+
+  position: fixed;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.prices-info-container {
+}
+
+.price-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
