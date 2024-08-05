@@ -29,10 +29,10 @@ export class PricesComponent implements OnInit {
       //definimos una localizacion por defecto
       this.location = ["-20.213349467685262", "-70.14856606721878"];
     };
-    this.combustibleService.getPrices(this.location[0], this.location[1]
-    ).subscribe((data: Combustible[]) => {
-      this.combustiblesInfo = data;
-      console.log(this.combustiblesInfo)
-    })
+    // this.combustibleService.getPrices(this.location[0], this.location[1]
+    // ).subscribe((data: Combustible[]) => {
+    //   this.combustiblesInfo = data;
+    //   console.log(this.combustiblesInfo)
+    // })
   }
 }

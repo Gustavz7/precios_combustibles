@@ -5,6 +5,10 @@ export class EstacionesData {
     }
 }
 
+export interface EstacionesData{
+    estaciones: Estacion[];
+}
+
 export interface Estacion {
     codigo: string;
     en_mantenimiento: number;
@@ -16,6 +20,14 @@ export interface Estacion {
     ubicacion: Ubicacion;
     punto_electrico: PuntoElectrico[];
     precios: Combustible;
+}
+
+export class Estacion{
+    ubicacion: Ubicacion;
+
+    constructor(){
+        this.ubicacion = new Ubicacion()
+    }
 }
 
 export interface Distribuidor {
@@ -104,6 +116,16 @@ export interface Ubicacion {
     direccion: string;
     latitud: string;
     longitud: string;
+}
+
+export class Ubicacion {
+    nombre_region: NombreRegion = NombreRegion.Antofagasta;
+    codigo_region: string = "";
+    nombre_comuna: string = "";
+    codigo_comuna: string = "";
+    direccion: string = "";
+    latitud: string = "";
+    longitud: string ="";
 }
 
 export enum NombreRegion {
