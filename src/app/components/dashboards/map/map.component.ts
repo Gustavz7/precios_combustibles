@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GoogleMapsModule } from "@angular/google-maps";
 import { CombustibleService } from '../../../services/combustible.service';
-import { filter, map, Observable } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { Estacion, Ubicacion } from '../../../model/estaciones';
 
 @Component({
@@ -14,76 +14,88 @@ import { Estacion, Ubicacion } from '../../../model/estaciones';
 })
 export class MapComponent implements OnInit {
   constructor(private combustibleService: CombustibleService) { }
+
+  //coordenadas entregadas por el navegador
+  latitude: number = -38.9862884;
+  longitude: number = -72.63725;
+  user_position = { lat: this.latitude, lng: this.longitude };
+  marker_position = { lat: 0, lng: 0 };
+  markers_estaciones= {}
+
   options: google.maps.MapOptions = {
     mapId: "DEMO_MAP_ID",
-    center: { lat: -31, lng: 147 },
-    zoom: 4,
+    center: this.user_position,
+    zoom: 12,
     mapTypeControl: true,
-
   };
 
-  //pitrufquen
-  longitude: number = 0;
-  latitude: number = 0;
 
   ubicacion_estacion_cercana: number[] = [];
   ubicaciones_estaciones$!: Observable<Ubicacion[]>;
-  estacion_actual$!: Observable<Estacion | undefined>;
+
+  private estacionActualSubject = new BehaviorSubject<Estacion>(new Estacion());
+  detalles_ubicacion_actual$ = this.estacionActualSubject.asObservable();
+  detalles_ubicacion: Ubicacion = new Ubicacion();
+
+
+
+
 
   getCurrentPosition(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         this.longitude = position.coords.longitude;
         this.latitude = position.coords.latitude;
-
-
-        //this.ubicacion_estacion_cercana = [Number(estacion_cercana.latitud), Number(estacion_cercana.longitud)]
       });
     } else {
       console.log("No support for geolocation")
     }
     this.definirEstacionCercana(this.longitude, this.latitude);
+    this
   }
 
   definirEstacionCercana(longitud_actual: number, latitud_actual: number): void {
     this.combustibleService.getUbicaciones().subscribe((ubicaciones: Ubicacion[]) => {
-
       //encontramos las coordenadas de la estacion mas cercana
-      let latitudes = ubicaciones.map(e => { return Number(e.latitud) });
-      let latitud_estacion_cercana = latitudes.reduce((prev_ok_item, current_item) => {
-        return Math.abs(current_item - longitud_actual) < Math.abs(prev_ok_item - longitud_actual) ? current_item : prev_ok_item;
-      });
-      let longitudes = ubicaciones.map(e => { return Number(e.longitud) });
-      let longitud_estacion_cercana: number = longitudes.reduce((a, b) => {
-        return Math.abs(b - latitud_actual) < Math.abs(a - latitud_actual) ? b : a;
-      });
-
-      console.info(longitud_actual, latitud_actual)
-      console.log(latitud_estacion_cercana + " - " + longitud_estacion_cercana)
+      let estacion_cercana = ubicaciones
+        .map(e => { return [Number(e.latitud), Number(e.longitud)] })
+        .reduce((coordenadaMasCercana, coordenadaActual) => {
+          const lonLatActual = Math.sqrt(
+            Math.pow(coordenadaActual[0] - latitud_actual, 2) + Math.pow(coordenadaActual[1] - longitud_actual, 2)
+          );
+          const lonLatCercana = Math.sqrt(
+            Math.pow(coordenadaMasCercana[0] - latitud_actual, 2) + Math.pow(coordenadaMasCercana[1] - longitud_actual, 2)
+          );
+          return lonLatActual < lonLatCercana ? coordenadaActual : coordenadaMasCercana;
+        })
       //filtamos y obtenemos la estacion mediante las coordenadas mas cercanas obtenidas anteriormente
-      this.estacion_actual$ = this.combustibleService.getEstaciones().pipe(map((estaciones: Estacion[]) => {
-        return estaciones.find(e => {
-          Number(e.ubicacion.latitud) == latitud_estacion_cercana && Number(e.ubicacion.longitud) == longitud_estacion_cercana
-        });
-      }));
+      this.getEstacionCercana(estacion_cercana);
+      ;
     })
-
   }
-
 
   /**
  * retorna la estacion mas cercana basada en las coordenadas proporcionadas
  * 
  * @return Observable<Estacion>
  */
-  getEstacionCercana(longitud: number, latitud: number) {
-    // const estacion = data.reduce((a, b) => {
-    //   //return Math.abs(b - objetivo) < Math.abs(a - objetivo) ? b : a;
-    // })
-
+  getEstacionCercana(estacion_cercana: number[]) {
+    this.combustibleService.getEstaciones().subscribe((estaciones: Estacion[]) => {
+      this.estacionActualSubject.next(estaciones.find(e => {
+        return Number(e.ubicacion.latitud) == estacion_cercana[0] && Number(e.ubicacion.longitud) == estacion_cercana[1]
+      }) || new Estacion());
+    })
   }
 
   ngOnInit(): void {
     this.getCurrentPosition();
+    this.detalles_ubicacion_actual$.subscribe((data: Estacion) => {
+      this.detalles_ubicacion = data.ubicacion;
+      this.marker_position.lat = Number(data.ubicacion.latitud);
+      this.marker_position.lng = Number(data.ubicacion.longitud);
+
+      console.log("user: "+JSON.stringify(this.user_position))
+      console.log("estacion: "+JSON.stringify(this.marker_position))
+    })
   }
 }

@@ -1,4 +1,9 @@
 <div class="google-container">
-    <!-- <google-map [width]="null" [options]="options"> </google-map> -->
-     estacion cercana: {{estacion_actual$ | async}}
+    <google-map [width]="null" [options]="options">
+        <map-advanced-marker [position]="marker_position" />
+        <map-advanced-marker [position]="user_position"/>
+
+    </google-map>
+       lat: {{detalles_ubicacion.latitud}} lng: {{detalles_ubicacion.longitud}}
+       {{detalles_ubicacion.nombre_region}} {{detalles_ubicacion.nombre_comuna}}
 </div>

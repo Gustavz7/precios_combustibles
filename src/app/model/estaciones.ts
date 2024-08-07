@@ -21,14 +21,29 @@ export interface Estacion {
     punto_electrico: PuntoElectrico[];
     precios: Combustible;
 }
-
-export class Estacion{
+export class Estacion {
+    codigo: string;
+    en_mantenimiento: number;
+    horario_atencion: null | string;
+    razon_social: string;
+   // distribuidor: Distribuidor;
+    //servicios: { [key: string]: boolean };
+    //metodos_de_pago: MetodosDePago;
     ubicacion: Ubicacion;
+    //punto_electrico: PuntoElectrico[];
+    //precios: Combustible;
 
     constructor(){
-        this.ubicacion = new Ubicacion()
+        this.codigo = "";
+        this.en_mantenimiento=0;
+        this.horario_atencion="";
+        this.razon_social="";
+        //this.distribuidor
+        this.ubicacion=new Ubicacion();
     }
 }
+
+
 
 export interface Distribuidor {
     marca: string;
@@ -119,7 +134,7 @@ export interface Ubicacion {
 }
 
 export class Ubicacion {
-    nombre_region: NombreRegion = NombreRegion.Antofagasta;
+    nombre_region: NombreRegion = NombreRegion.MetropolitanaDeSantiago;
     codigo_region: string = "";
     nombre_comuna: string = "";
     codigo_comuna: string = "";
