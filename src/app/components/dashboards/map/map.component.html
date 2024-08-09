@@ -1,9 +1,45 @@
 <div class="google-container">
-    <google-map [width]="null" [options]="options">
-        <map-advanced-marker [position]="marker_position" />
-        <map-advanced-marker [position]="user_position"/>
+  <google-map [width]="null" [height]="null" [options]="options">
+    <!-- <map-advanced-marker
+      #markerUser="mapAdvancedMarker"
+      [position]="user_position"
+      (mapClick)="onMarkerClick(markerUser, user_position)"
+    >
+    </map-advanced-marker> -->
 
-    </google-map>
-       lat: {{detalles_ubicacion.latitud}} lng: {{detalles_ubicacion.longitud}}
-       {{detalles_ubicacion.nombre_region}} {{detalles_ubicacion.nombre_comuna}}
+    <map-advanced-marker
+      #markerElem="mapAdvancedMarker"
+      [position]="test_marker"
+      [content]="img_tag"
+    />
+
+    <!-- @for (location of markers_copec; track location) {
+    <map-advanced-marker
+      #markerElem="mapAdvancedMarker"
+      [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content"
+      (mapClick)="onMarkerClick(markerElem, location)"
+    />
+
+} -->
+<map-marker *ngFor="let marker of markers_shell" [position]="marker.position" [options]="marker.options"></map-marker>
+
+    @for (location of markers_shell; track location) {
+    <map-advanced-marker
+      #markerElem="mapAdvancedMarker"
+      [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content"
+      (mapClick)="onMarkerClick(markerElem, location)"
+    />
+
+    } @for (location of markers_otras_estaciones; track location) {
+    <map-advanced-marker
+      #markerElem="mapAdvancedMarker"
+      [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content"
+      (mapClick)="onMarkerClick(markerElem, location)"
+    />
+    }
+    <map-info-window #infoWindow></map-info-window>
+  </google-map>
 </div>
