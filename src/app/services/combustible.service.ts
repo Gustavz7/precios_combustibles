@@ -17,10 +17,13 @@ export class CombustibleService {
   //private estacionesData: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   //public data$: Observable<any[]> = this.estacionesData.asObservable();
 
-  private ubicaciones: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  //estacion actualmente seleccionada
+  private estacionSubject: BehaviorSubject<Estacion> = new BehaviorSubject<Estacion>(new Estacion());
+  public estacionActual$: Observable<Estacion> = this.estacionSubject.asObservable();
 
-
-  private estacionesData$!: Observable<any[]>;
+  //estacion cercana
+  private estacionCercanaSubject: BehaviorSubject<Estacion> = new BehaviorSubject<Estacion>(new Estacion());
+  public estacionCercana$: Observable<Estacion> = this.estacionCercanaSubject.asObservable();
 
   //oden por defecto de los combustibles en el arreglo entregado
   order: string[] = ['97', '95', '93', 'DI', 'KE'];
@@ -44,39 +47,54 @@ export class CombustibleService {
     }))
   }
 
+  getEstacion(lat: number, lng: number): Observable<Estacion> {
+    return this.getApiResults().pipe(
+      map((estaciones: Estacion[]) => {
+        const result = estaciones.find(estacion =>
+          lat === Number(estacion.ubicacion.latitud) && lng === Number(estacion.ubicacion.longitud)
+        );
+        return result ?? new Estacion();
+      })
+    );
+  }
 
+  setEstacionActual(lat: number, lng: number, estacion?: Estacion): void {
+    //por aqui cuando se trata de la estacion mas cercana
+    //esto aplicaria en el primer ingreso a la app
+    if (estacion == undefined) {
+      this.getEstacion(lat, lng).subscribe(estacion_cercana => {
+        this.estacionCercanaSubject.next(estacion_cercana)
+      });
+    } else {
+      this.estacionCercanaSubject.next(estacion)
+      this.estacionSubject.next(estacion)
+    }
+  }
+
+  public findEstacionCercana(longitud_actual: number, latitud_actual: number): void {
+    this.getUbicaciones().subscribe((ubicaciones: Ubicacion[]) => {
+      //encontramos las coordenadas de la estacion mas cercana
+      const latLng_estacion_cercana = ubicaciones
+        .map(e => { return [Number(e.latitud), Number(e.longitud)] })
+        .reduce((coordenadaMasCercana, coordenadaActual) => {
+          const lonLatActual = Math.sqrt(
+            Math.pow(coordenadaActual[0] - latitud_actual, 2) + Math.pow(coordenadaActual[1] - longitud_actual, 2)
+          );
+          const lonLatCercana = Math.sqrt(
+            Math.pow(coordenadaMasCercana[0] - latitud_actual, 2) + Math.pow(coordenadaMasCercana[1] - longitud_actual, 2)
+          );
+          return lonLatActual < lonLatCercana ? coordenadaActual : coordenadaMasCercana;
+        });
+
+      this.setEstacionActual(latLng_estacion_cercana[0], latLng_estacion_cercana[1])
+    })
+  }
 
   /**
-  * obtiene los precios de combustibles a partir de una ubicacion (latitud y longitud) proporcionada
-  * @param string[]  La longitud y latitud.
-  * @return Un objeto 'Precio' con los valores encontrados
-  */
-  // getPrices(latitud: string, longitud: string): Observable < Combustible[] > {
-  //     return this.getApiResults().pipe((data:Estacion[])=>{
-  //       const estacion = data.find(e =>
-  //         e.ubicacion.latitud === latitud && e.ubicacion.longitud === longitud
-  //       );
-
-  //       if (!estacion) {
-  //         return [];
-  //       }
-
-  //       return Object.entries(estacion.precios).map(([key, value]: [string, any]) => {
-  //         const element = new Combustible();
-  //         element.nombre = key;
-  //         element.precio = value.precio;
-  //         return element;
-  //       }).sort((a, b) => this.order.indexOf(a.nombre) - this.order.indexOf(b.nombre));;
-  //     }
-  //   );
-  // }
+ * retorna la estacion mas cercana basada en las coordenadas proporcionadas
+ * 
+ * @return Observable<Estacion>
+ */
 
 
-
-
-  encontrarNumeroMasCercano(array: number[], objetivo: number): number {
-    return array.reduce((a, b) => {
-      return Math.abs(b - objetivo) < Math.abs(a - objetivo) ? b : a;
-    });
-  }
 }

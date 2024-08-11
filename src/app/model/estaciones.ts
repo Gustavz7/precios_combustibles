@@ -5,7 +5,7 @@ export class EstacionesData {
     }
 }
 
-export interface EstacionesData{
+export interface EstacionesData {
     estaciones: Estacion[];
 }
 
@@ -19,27 +19,30 @@ export interface Estacion {
     metodos_de_pago: MetodosDePago;
     ubicacion: Ubicacion;
     punto_electrico: PuntoElectrico[];
-    precios: Combustible;
+    precios: Combustible[];
 }
 export class Estacion {
     codigo: string;
     en_mantenimiento: number;
     horario_atencion: null | string;
     razon_social: string;
-   // distribuidor: Distribuidor;
+    distribuidor: Distribuidor;
     //servicios: { [key: string]: boolean };
-    //metodos_de_pago: MetodosDePago;
+    //metodos_de_pago: any;
     ubicacion: Ubicacion;
     //punto_electrico: PuntoElectrico[];
-    //precios: Combustible;
+    precios: Combustible[];
 
-    constructor(){
+    constructor() {
         this.codigo = "";
-        this.en_mantenimiento=0;
-        this.horario_atencion="";
-        this.razon_social="";
-        //this.distribuidor
-        this.ubicacion=new Ubicacion();
+        this.en_mantenimiento = 0;
+        this.horario_atencion = "";
+        this.razon_social = "";
+        this.distribuidor = new Distribuidor();
+        //this.metodos_de_pago = new MetodoDePago();
+        this.ubicacion = new Ubicacion();
+        // this.punto_electrico = new PuntoElectrico();
+        this.precios = new Array<Combustible>;
     }
 }
 
@@ -48,6 +51,14 @@ export class Estacion {
 export interface Distribuidor {
     marca: string;
     logo: string;
+}
+export class Distribuidor {
+    marca: string;
+    logo: string;
+    constructor() {
+        this.marca = ""
+        this.logo = ""
+    }
 }
 
 export interface MetodosDePago {
@@ -71,13 +82,13 @@ export class Combustible {
     hora_actualizacion: string;
     tipo_atencion: TipoAtencion;
 
-    constructor() {
-        this.nombre='';
-        this.unidad_cobro = UnidadCobro.L;
-        this.precio = '';
-        this.fecha_actualizacion = new Date();
-        this.hora_actualizacion = '';
-        this.tipo_atencion = TipoAtencion.Asistido;
+    constructor(nombre: string, unidad_cobro: UnidadCobro, precio: string, fecha_actualizacion: Date, hora_actualizacion: string, tipo_atencion: TipoAtencion) {
+        this.nombre = nombre;
+        this.unidad_cobro = unidad_cobro;
+        this.precio = precio;
+        this.fecha_actualizacion = fecha_actualizacion;
+        this.hora_actualizacion = hora_actualizacion;
+        this.tipo_atencion = tipo_atencion;
     }
 }
 
@@ -140,7 +151,7 @@ export class Ubicacion {
     codigo_comuna: string = "";
     direccion: string = "";
     latitud: string = "";
-    longitud: string ="";
+    longitud: string = "";
 }
 
 export enum NombreRegion {

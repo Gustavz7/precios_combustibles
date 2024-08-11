@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CombustibleService } from '../../../services/combustible.service';
-import { Combustible } from '../../../model/estaciones';
+import { Combustible, Estacion } from '../../../model/estaciones';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,28 +11,41 @@ import { CommonModule } from '@angular/common';
   templateUrl: './prices.component.html',
   styleUrl: './prices.component.css'
 })
-export class PricesComponent implements OnInit {
+export class PricesComponent implements OnInit, OnDestroy {
   //inyectamos las dependencias a usarse en esta clase
   constructor(private combustibleService: CombustibleService) { }
 
   //TODO: Conectar con google maps, ubicacion dinamica
-  location: Array<string> = [];
-  combustiblesInfo?: Combustible[];
+  location: Array<number> = [-20.213349467685262, -70.14856606721878];
+  combustiblesInfo: Combustible[] = new Array<Combustible>;
 
   ngOnInit(): void {
-    this.actualizarPrecios();
+    this.obtenerDetallesEstacion();
   }
 
-  actualizarPrecios(): void {
+  ngOnDestroy(): void {
+  }
+
+  obtenerDetallesEstacion(): void {
     this.combustiblesInfo = new Array<Combustible>;
-    if (this.location.length < 1) {
-      //definimos una localizacion por defecto
-      this.location = ["-20.213349467685262", "-70.14856606721878"];
-    };
-    // this.combustibleService.getPrices(this.location[0], this.location[1]
-    // ).subscribe((data: Combustible[]) => {
-    //   this.combustiblesInfo = data;
-    //   console.log(this.combustiblesInfo)
-    // })
+    this.combustibleService.findEstacionCercana(this.location[0], this.location[1]);
+
+    this.combustibleService.estacionCercana$.subscribe((estacion: Estacion) => {
+      const precios = estacion.precios
+      this.combustiblesInfo = new Array<Combustible>;
+      // for in por que se trata de un objeto js
+      for (const key in precios) {
+        if (precios.hasOwnProperty(key)) {
+          this.combustiblesInfo?.push(
+            new Combustible(key,
+              precios[key].unidad_cobro,
+              precios[key].precio,
+              precios[key].fecha_actualizacion,
+              precios[key].hora_actualizacion,
+              precios[key].tipo_atencion)
+          )
+        }
+      }
+    })
   }
 }

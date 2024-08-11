@@ -5,6 +5,7 @@ import { CombustibleService } from '../../../services/combustible.service';
 import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { Estacion, Ubicacion } from '../../../model/estaciones';
 import { MarkerEstacion } from '../../../model/marker_estaciones';
+import { publishFacade } from '@angular/compiler';
 
 @Component({
   selector: 'app-map',
@@ -23,18 +24,7 @@ export class MapComponent implements OnInit {
   //coordenadas entregadas por el navegador
   latitude: number = -38.9862884;
   longitude: number = -72.63725;
-
-  user_position: MarkerEstacion = { lat: this.latitude, lng: this.longitude, content: undefined };
-  marker_position = { lat: 0, lng: 0 };
-
-  markers_copec: any[] = [];
-  markers_shell: any[] = [];
-  markers_petrobras: any[] = [];
-
-  markers_otras_estaciones: any[] = [];
-
-  test_marker: any = { lat: -38.9862884, lng: -72.63725, content: '' };
-  img_tag: any = document.createElement("img");
+  user_position: any = { lat: this.latitude, lng: this.longitude };
 
   options: google.maps.MapOptions = {
     mapId: "DEMO_MAP_ID",
@@ -45,27 +35,32 @@ export class MapComponent implements OnInit {
     fullscreenControl: true
   };
 
+  //listas de marcadores
+  marker_estacion_cercana: any = { lat: 0, lng: 0 };
+  markers_copec: any[] = [];
+  markers_shell: any[] = [];
+  markers_petrobras: any[] = [];
+  markers_otras_estaciones: any[] = [];
 
-  markers: MapMarkerClusterer[] = [{
-    position: new google.maps.LatLng(35, 139),
-    options: {
-      imagePath: {
-        url: 'path/to/your/icon.png', // URL to the custom icon image
-        scaledSize: new google.maps.Size(40, 40) // Size of the icon
-      }
-    }
-  }
-  ];
-
+  //datos acerca de las estaciones y la mas cercana
+  private estacionActualSubject = new BehaviorSubject<Estacion>(new Estacion());
+  detalles_ubicacion_actual$: Observable<Estacion> = this.estacionActualSubject.asObservable();
+  detalles_ubicacion: Ubicacion = new Ubicacion();
   ubicacion_estacion_cercana: number[] = [];
 
-  private estacionActualSubject = new BehaviorSubject<Estacion>(new Estacion());
-  detalles_ubicacion_actual$ = this.estacionActualSubject.asObservable();
-  detalles_ubicacion: Ubicacion = new Ubicacion();
+  ngOnInit(): void {
+    this.getCurrentPosition();
 
+    //nos guardamos los detalles de la ubicacion actual y de la estacion cercana
+    this.combustibleService.estacionCercana$.subscribe((data: Estacion) => {
+      this.detalles_ubicacion = data.ubicacion;
+      this.marker_estacion_cercana.lat = Number(data.ubicacion.latitud);
+      this.marker_estacion_cercana.lng = Number(data.ubicacion.longitud);
+    })
 
-
-
+    //mapeamos todas las coordenadas en arrays para mostrarlos en marcadores del mapa
+    this.mapLocations();
+  }
 
   getCurrentPosition(): void {
     if (navigator.geolocation) {
@@ -76,45 +71,19 @@ export class MapComponent implements OnInit {
     } else {
       console.log("No support for geolocation")
     }
-    this.definirEstacionCercana(this.longitude, this.latitude);
-    this
+    //this.findEstacionCercana(this.longitude, this.latitude);
   }
 
-  definirEstacionCercana(longitud_actual: number, latitud_actual: number): void {
-    this.combustibleService.getUbicaciones().subscribe((ubicaciones: Ubicacion[]) => {
-      //encontramos las coordenadas de la estacion mas cercana
-      let estacion_cercana = ubicaciones
-        .map(e => { return [Number(e.latitud), Number(e.longitud)] })
-        .reduce((coordenadaMasCercana, coordenadaActual) => {
-          const lonLatActual = Math.sqrt(
-            Math.pow(coordenadaActual[0] - latitud_actual, 2) + Math.pow(coordenadaActual[1] - longitud_actual, 2)
-          );
-          const lonLatCercana = Math.sqrt(
-            Math.pow(coordenadaMasCercana[0] - latitud_actual, 2) + Math.pow(coordenadaMasCercana[1] - longitud_actual, 2)
-          );
-          return lonLatActual < lonLatCercana ? coordenadaActual : coordenadaMasCercana;
-        })
-      //filtamos y obtenemos la estacion mediante las coordenadas mas cercanas obtenidas anteriormente
-      this.getEstacionCercana(estacion_cercana);
-      ;
-    })
-  }
 
-  /**
- * retorna la estacion mas cercana basada en las coordenadas proporcionadas
- * 
- * @return Observable<Estacion>
- */
-  getEstacionCercana(estacion_cercana: number[]) {
-    this.combustibleService.getEstaciones().subscribe((estaciones: Estacion[]) => {
-      this.estacionActualSubject.next(estaciones.find(e => {
-        return Number(e.ubicacion.latitud) == estacion_cercana[0] && Number(e.ubicacion.longitud) == estacion_cercana[1]
-      }) || new Estacion());
-    })
-  }
 
   onMarkerClick(marker: MapAdvancedMarker, position: any) {
-    this.infoWindow.openAdvancedMarkerElement(marker.advancedMarker, position.lat);
+    this.combustibleService.getEstacion(position.lat, position.lng).subscribe((estacion) => {
+      //this.infoWindow.openAdvancedMarkerElement(marker.advancedMarker, estacion.distribuidor.marca); //deprecated
+      this.infoWindow.open(marker, true, estacion.distribuidor.marca)
+
+      //tambien debe actualizar los valores del componente precios
+      this.combustibleService.setEstacionActual(position.lat, position.lng, estacion);
+    })
   }
 
   mapLocations() {
@@ -131,7 +100,7 @@ export class MapComponent implements OnInit {
               this.markers_copec.push({ lat, lng })
               break;
             case 'SHELL':
-              this.markers_shell.push({ position: { lat, lng } });
+              this.markers_shell.push({ lat, lng });
               break;
             case 'PETROBRAS':
               this.markers_petrobras.push({ lat, lng });
@@ -146,35 +115,5 @@ export class MapComponent implements OnInit {
       }
       );
     });
-    console.log(this.markers_shell)
-  }
-
-  ngOnInit(): void {
-    let beachFlag = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-    this.img_tag.src = beachFlag;
-
-
-    //configuracion imagen personalida para estaciones
-    // const beachFlag = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-    // let imgTag = document.createElement("img");
-    // imgTag.src = beachFlag;
-    // this.user_position.content = imgTag;
-
-    /*obtenemos la posiion actual meidante las coordenadas que solicita el navegador
-    y definimos la estacion mas cercana
-    */
-    this.getCurrentPosition();
-
-    //nos guardamos los detalles de la ubicacion actual y de la estacion cercana
-    this.detalles_ubicacion_actual$.subscribe((data: Estacion) => {
-      this.detalles_ubicacion = data.ubicacion;
-      this.marker_position.lat = Number(data.ubicacion.latitud);
-      this.marker_position.lng = Number(data.ubicacion.longitud);
-    })
-
-    //mapeamos todas las coordenadas en arrays para mostrarlos en marcadores del mapa
-    this.mapLocations();
-
-
   }
 }
