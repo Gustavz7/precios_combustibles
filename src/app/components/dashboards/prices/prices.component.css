@@ -5,27 +5,41 @@
   border-radius: 5px;
   border-color: transparent;
 
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.8);
-
-  width: 40vh;
-  height: 80vh;
+  color: black;
+  width: 30%;
+  height: 100vh;
 
   position: fixed;
-  top: 50%;
-  left: 15%;
-  transform: translate(-50%, -50%);
+}
 
+.prices-card {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  background: white;
+}
+.distribuidor-img-container {
+  width: 100%;
+  height: 25%;
+  background-color: red;
+  align-self: flex-start;
+}
+.distribuidor-logo {
+  max-width: 100px;
 }
 
-.prices-info-container {
+.distribuidor-text-container{
+  background-color: blue;
+  width: 100%;
+  height: 10%;
 }
 
-.price-info {
+.distribuidor-prices-container {
+  height: 70%;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -25,14 +25,17 @@ export class MapComponent implements OnInit {
   latitude: number = -38.9862884;
   longitude: number = -72.63725;
   user_position: any = { lat: this.latitude, lng: this.longitude };
+  center_position: google.maps.LatLngLiteral = this.user_position;
 
   options: google.maps.MapOptions = {
     mapId: "DEMO_MAP_ID",
-    center: this.user_position,
+    //center: this.center_position,
     zoom: 14,
     mapTypeControl: true,
     streetViewControl: false,
-    fullscreenControl: true
+    fullscreenControl: false,
+    minZoom: 10
+
   };
 
   //listas de marcadores
@@ -62,6 +65,12 @@ export class MapComponent implements OnInit {
     this.mapLocations();
   }
 
+  moveMap(event: google.maps.MapMouseEvent) {
+    if (event.latLng != null) {
+      this.center_position = (event.latLng.toJSON());
+    }
+  }
+
   getCurrentPosition(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -79,7 +88,7 @@ export class MapComponent implements OnInit {
   onMarkerClick(marker: MapAdvancedMarker, position: any) {
     this.combustibleService.getEstacion(position.lat, position.lng).subscribe((estacion) => {
       //this.infoWindow.openAdvancedMarkerElement(marker.advancedMarker, estacion.distribuidor.marca); //deprecated
-      this.infoWindow.open(marker, true, estacion.distribuidor.marca)
+      this.infoWindow.open(marker, true, estacion.distribuidor.marca + estacion.ubicacion.latitud + estacion.ubicacion.longitud)
 
       //tambien debe actualizar los valores del componente precios
       this.combustibleService.setEstacionActual(position.lat, position.lng, estacion);

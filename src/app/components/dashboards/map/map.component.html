@@ -1,5 +1,5 @@
 <div class="google-container">
-  <google-map [width]="null" [height]="null" [options]="options">
+  <google-map [width]="null" [height]="null" [options]="options" [center]="center_position"  (mapClick)="moveMap($event)">
     @for (location of markers_otras_estaciones; track location) {
     <map-advanced-marker
       #markerElem="mapAdvancedMarker"

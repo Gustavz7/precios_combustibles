@@ -1,13 +1,28 @@
 <div class="prices-component">
-  <p>esto es un titulo</p>
-  <div class="prices-info-container">
-    <div class="price-info" *ngIf="combustiblesInfo.length > 1; else cargando">
+  <div class="prices-card">
+    <div class="distribuidor-img-container">
+      <img class="distribuidor-img" />
+      <img
+        class="distribuidor-logo"
+        src="{{ estacionActual.distribuidor.logo }}"
+        alt="{{ estacionActual.distribuidor.marca }}"
+      />
+    </div>
+
+    <div class="distribuidor-text-container">
+      {{ estacionActual.distribuidor.marca }}
+    </div>
+    <div
+      class="distribuidor-prices-container"
+      *ngIf="combustiblesInfo.length > 1; else cargando"
+    >
       <ul *ngFor="let combustible of combustiblesInfo; let i = index">
         <li>{{ combustible.nombre }}</li>
         <li>{{ combustible.precio | currency }}</li>
         <li>{{ combustible.fecha_actualizacion | date }}</li>
       </ul>
     </div>
+    <div></div>
 
     <ng-template class="price-info" #cargando> cargando.. </ng-template>
   </div>

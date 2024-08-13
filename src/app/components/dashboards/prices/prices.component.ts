@@ -15,9 +15,9 @@ export class PricesComponent implements OnInit, OnDestroy {
   //inyectamos las dependencias a usarse en esta clase
   constructor(private combustibleService: CombustibleService) { }
 
-  //TODO: Conectar con google maps, ubicacion dinamica
   location: Array<number> = [-20.213349467685262, -70.14856606721878];
   combustiblesInfo: Combustible[] = new Array<Combustible>;
+  estacionActual:Estacion = new Estacion();
 
   ngOnInit(): void {
     this.obtenerDetallesEstacion();
@@ -31,6 +31,7 @@ export class PricesComponent implements OnInit, OnDestroy {
     this.combustibleService.findEstacionCercana(this.location[0], this.location[1]);
 
     this.combustibleService.estacionCercana$.subscribe((estacion: Estacion) => {
+      this.estacionActual = estacion;
       const precios = estacion.precios
       this.combustiblesInfo = new Array<Combustible>;
       // for in por que se trata de un objeto js
