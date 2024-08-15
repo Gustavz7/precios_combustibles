@@ -1,4 +1,16 @@
+.components-container{
+  display: flex;
+  flex-direction: row;
+}
 app-prices {
-  height: auto;
-  width: auto;
+  width: 30%;
+  height: 100vh;
+  left: 0;
+
+  z-index: 5;
+}
+
+app-map{
+  width: 70%;
+  height: 100%;
 }

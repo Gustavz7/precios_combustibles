@@ -1,15 +1,11 @@
 .prices-component {
-  z-index: 5;
   color: white;
   border-style: solid;
   border-radius: 5px;
   border-color: transparent;
 
   color: black;
-  width: 30%;
-  height: 100vh;
 
-  position: fixed;
 }
 
 .prices-card {
