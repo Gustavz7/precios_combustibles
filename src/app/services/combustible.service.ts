@@ -12,11 +12,6 @@ export class CombustibleService {
 
   private apiUrl: string = "assets/data.json";
 
-  //con BehavioSubject podemos iniciar con un valor por defecto
-  //será entregado este valor desde el principio 
-  //private estacionesData: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  //public data$: Observable<any[]> = this.estacionesData.asObservable();
-
   //estacion actualmente seleccionada
   private estacionSubject: BehaviorSubject<Estacion> = new BehaviorSubject<Estacion>(new Estacion());
   public estacionActual$: Observable<Estacion> = this.estacionSubject.asObservable();
@@ -74,8 +69,6 @@ export class CombustibleService {
     }
   }
 
-  //TODO: centrar mapa al subscribirse en el oninit (es posible?)
-
   public defineEstacionCercana(longitud_actual?: number, latitud_actual?: number): void {
     this.getUbicaciones().subscribe((ubicaciones: Ubicacion[]) => {
       //encontramos las coordenadas de la estacion mas cercana
@@ -101,11 +94,6 @@ export class CombustibleService {
     })
   }
 
-  /**
- * retorna la estacion mas cercana basada en las coordenadas proporcionadas
- * 
- * @return Observable<Estacion>
- */
-
+//TODO: metodo que recupere la ubicacion actual basada en coordenadas entregadas por el navegador
 
 }

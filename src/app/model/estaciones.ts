@@ -51,6 +51,7 @@ export class Estacion {
 export interface Distribuidor {
     marca: string;
     logo: string;
+    imagen:string;
 }
 export class Distribuidor {
     marca: string;
@@ -58,6 +59,8 @@ export class Distribuidor {
     constructor() {
         this.marca = ""
         this.logo = ""
+        this.imagen=""
+
     }
 }
 

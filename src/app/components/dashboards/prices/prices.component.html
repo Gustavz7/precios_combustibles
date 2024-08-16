@@ -2,13 +2,13 @@
   <div class="prices-card">
     <div class="card-img">
       <div class="distribuidor-img-container">
-        <img class="distribuidor-img" />
+        <img class="distribuidor-img" src="{{estacionActual.distribuidor.imagen}}"/>
         <img class="distribuidor-logo" src="{{ estacionActual.distribuidor.logo }}"
           alt="{{ estacionActual.distribuidor.marca }}" />
       </div>
-      <div class="distribuidor-text-container">
-        {{ estacionActual.distribuidor.marca }}
-      </div>
+    </div>
+    <div class="distribuidor-text-container">
+      {{ estacionActual.distribuidor.marca }}
     </div>
 
     <div class="card-details">

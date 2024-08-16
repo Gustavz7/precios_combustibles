@@ -87,12 +87,10 @@ export class MapComponent implements OnInit {
       if (lat != 0 && lng != 0) {
         this.center_position.lat = lat;
         this.center_position.lng = lng;
-        this.options.center = this.center_position
+        this.options.center = this.center_position;
         this.mapReady = true;
-      } 
+      }
     });
-
-    // this.getCurrentPosition(); //llevar esto a un servicio
 
     //nos guardamos los detalles de la ubicacion actual y de la estacion cercana
     this.combustibleService.estacionCercana$.subscribe((data: Estacion) => {
@@ -105,44 +103,20 @@ export class MapComponent implements OnInit {
     this.mapLocations();
   }
 
-  refreshCenter(event: any) {
-   // this.map.center.lat=this.center_position.lat
-    //this.map.center.lng=this.center_position.lng
-
-    console.log()
-  }
-
   moveMap(event: google.maps.MapMouseEvent) {
     if (event.latLng != null) {
       this.center_position = event.latLng.toJSON();
     }
   }
 
-  // getCurrentPosition(): void {
-  //   if (this.enableGeolocalization && navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       this.longitude = position.coords.longitude;
-  //       this.latitude = position.coords.latitude;
-  //       console.log(
-  //         'lat lng entregadas por navegador:' + this.longitude + this.latitude
-  //       );
-  //     });
-  //   } else {
-  //     console.log('No support for geolocation or geolocation disabled');
-  //   }
-  // }
-
   onMarkerClick(marker: MapAdvancedMarker, position: any) {
     this.combustibleService
       .getEstacion(position.lat, position.lng)
       .subscribe((estacion) => {
-        //this.infoWindow.openAdvancedMarkerElement(marker.advancedMarker, estacion.distribuidor.marca); //deprecated
         this.infoWindow.open(
           marker,
           true,
-          estacion.distribuidor.marca +
-            estacion.ubicacion.latitud +
-            estacion.ubicacion.longitud
+          estacion.ubicacion.direccion + ',' + estacion.ubicacion.nombre_comuna
         );
 
         //tambien debe actualizar los valores del componente precios

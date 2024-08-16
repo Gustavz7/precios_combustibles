@@ -26,20 +26,31 @@
   align-self: flex-start;
 }
 .card-details {
-  width: 99%;
-  height: 100%;
+  width: 100%;
+  height: 75%;
   border: 5px solid;
   border-color: rgb(204, 204, 204);
 }
 
 .distribuidor-img-container {
   width: 100%;
-  height: 25%;
+  height: 100%;
   background-color: red;
   align-self: flex-start;
+  overflow: hidden;
+
+}
+.distribuidor-img{
+  min-width: 200px;
+  height: 100%;
+  width: auto;
 }
 .distribuidor-logo {
   max-width: 100px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
 }
 
 .distribuidor-text-container {
@@ -49,7 +60,7 @@
 }
 
 .distribuidor-prices-container {
-  margin: 100px 0;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;

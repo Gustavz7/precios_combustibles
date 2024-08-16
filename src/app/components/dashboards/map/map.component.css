@@ -4,3 +4,7 @@
   background-color: rgba(100, 124, 132, 0.564);
 }
 
+.marker-estacion-actual{
+  z-index: 5;
+}
+
