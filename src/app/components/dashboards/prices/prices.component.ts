@@ -3,11 +3,14 @@ import { Observable } from 'rxjs';
 import { CombustibleService } from '../../../services/combustible.service';
 import { Combustible, Estacion } from '../../../model/estaciones';
 import { CommonModule } from '@angular/common';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+
 
 @Component({
   selector: 'app-prices',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatDividerModule, MatListModule],
   templateUrl: './prices.component.html',
   styleUrl: './prices.component.css'
 })
@@ -15,7 +18,7 @@ export class PricesComponent implements OnInit, OnDestroy {
   //inyectamos las dependencias a usarse en esta clase
   constructor(private combustibleService: CombustibleService) { }
 
-  location: Array<number> = [-20.213349467685262, -70.14856606721878];
+  //localizacion del usuario
   combustiblesInfo: Combustible[] = new Array<Combustible>;
   estacionActual:Estacion = new Estacion();
 
@@ -28,7 +31,7 @@ export class PricesComponent implements OnInit, OnDestroy {
 
   obtenerDetallesEstacion(): void {
     this.combustiblesInfo = new Array<Combustible>;
-    this.combustibleService.findEstacionCercana(this.location[0], this.location[1]);
+    this.combustibleService.defineEstacionCercana();
 
     this.combustibleService.estacionCercana$.subscribe((estacion: Estacion) => {
       this.estacionActual = estacion;

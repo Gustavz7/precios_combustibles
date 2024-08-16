@@ -1,34 +1,27 @@
 <div class="google-container">
-  <google-map [width]="null" [height]="null" [options]="options" [center]="center_position"  (mapClick)="moveMap($event)">
-    @for (location of markers_otras_estaciones; track location) {
-    <map-advanced-marker
-      #markerElem="mapAdvancedMarker"
-      [position]="{ lat: location.lat, lng: location.lng }"
-      [content]="location.content"
-      (mapClick)="onMarkerClick(markerElem, location)"
-    />
-    } @for (location of markers_copec; track location) {
-    <map-advanced-marker
-      #markerElem="mapAdvancedMarker"
-      [position]="{ lat: location.lat, lng: location.lng }"
-      [content]="location.content"
-      (mapClick)="onMarkerClick(markerElem, location)"
-    />
+<div class="map" *ngIf="mapReady; else cargando">
+  <google-map [width]="null" [height]="null" [options]="options" (mapClick)="moveMap($event)" [center]="center_position">
+    <map-advanced-marker #markerElem="mapAdvancedMarker"
+      [position]="{ lat: marker_estacion_cercana.lat, lng: marker_estacion_cercana.lng }"
+      [content]="imageEstacionCercana" (mapClick)="onMarkerClick(markerElem, marker_estacion_cercana)" />
 
+    @for (location of markers_otras_estaciones; track location) {
+    <map-advanced-marker #markerElem="mapAdvancedMarker" [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content" (mapClick)="onMarkerClick(markerElem, location)" />
+    }
+    @for (location of markers_copec; track location) {
+    <map-advanced-marker #markerElem="mapAdvancedMarker" [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content" (mapClick)="onMarkerClick(markerElem, location)" />
     } @for (location of markers_shell; track location) {
-    <map-advanced-marker
-      #markerElem="mapAdvancedMarker"
-      [position]="{ lat: location.lat, lng: location.lng }"
-      [content]="location.content"
-      (mapClick)="onMarkerClick(markerElem, location)"
-    />
+    <map-advanced-marker #markerElem="mapAdvancedMarker" [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content" (mapClick)="onMarkerClick(markerElem, location)" />
     } @for (location of markers_petrobras; track location) {
-    <map-advanced-marker
-      #markerElem="mapAdvancedMarker"
-      [position]="{ lat: location.lat, lng: location.lng }"
-      [content]="location.content"
-      (mapClick)="onMarkerClick(markerElem, location)"
-    />}
+    <map-advanced-marker #markerElem="mapAdvancedMarker" [position]="{ lat: location.lat, lng: location.lng }"
+      [content]="location.content" (mapClick)="onMarkerClick(markerElem, location)" />}
     <map-info-window #infoWindow></map-info-window>
   </google-map>
+</div>
+<ng-template class="" #cargando> cargando mapa.. </ng-template>
+
+
 </div>

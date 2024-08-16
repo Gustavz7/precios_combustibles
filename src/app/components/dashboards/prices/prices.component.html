@@ -1,28 +1,25 @@
 <div class="prices-component">
   <div class="prices-card">
-    <div class="distribuidor-img-container">
-      <img class="distribuidor-img" />
-      <img
-        class="distribuidor-logo"
-        src="{{ estacionActual.distribuidor.logo }}"
-        alt="{{ estacionActual.distribuidor.marca }}"
-      />
+    <div class="card-img">
+      <div class="distribuidor-img-container">
+        <img class="distribuidor-img" />
+        <img class="distribuidor-logo" src="{{ estacionActual.distribuidor.logo }}"
+          alt="{{ estacionActual.distribuidor.marca }}" />
+      </div>
+      <div class="distribuidor-text-container">
+        {{ estacionActual.distribuidor.marca }}
+      </div>
     </div>
 
-    <div class="distribuidor-text-container">
-      {{ estacionActual.distribuidor.marca }}
+    <div class="card-details">
+      <div class="distribuidor-prices-container" *ngIf="combustiblesInfo.length > 1; else cargando">
+        {{estacionActual.ubicacion.latitud}} - {{estacionActual.ubicacion.longitud}} ({{estacionActual.ubicacion.nombre_comuna}})
+        <mat-list *ngFor="let combustible of combustiblesInfo; let i = index">
+          <mat-list-item> {{ combustible.nombre }} {{ combustible.precio | currency }}</mat-list-item>
+          <mat-divider></mat-divider>
+        </mat-list>
+      </div>
     </div>
-    <div
-      class="distribuidor-prices-container"
-      *ngIf="combustiblesInfo.length > 1; else cargando"
-    >
-      <ul *ngFor="let combustible of combustiblesInfo; let i = index">
-        <li>{{ combustible.nombre }}</li>
-        <li>{{ combustible.precio | currency }}</li>
-        <li>{{ combustible.fecha_actualizacion | date }}</li>
-      </ul>
-    </div>
-    <div></div>
 
     <ng-template class="price-info" #cargando> cargando.. </ng-template>
   </div>

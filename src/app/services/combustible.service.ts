@@ -28,6 +28,9 @@ export class CombustibleService {
   //oden por defecto de los combustibles en el arreglo entregado
   order: string[] = ['97', '95', '93', 'DI', 'KE'];
 
+  //coordenadas por defecto si no se informa ninguna otra
+  location: Array<number> = [-38.7333306601131, -72.6149350404734];
+
 
   getApiResults(): Observable<Estacion[]> {
     return this.http.get<Estacion[]>(this.apiUrl)
@@ -71,12 +74,17 @@ export class CombustibleService {
     }
   }
 
-  public findEstacionCercana(longitud_actual: number, latitud_actual: number): void {
+  //TODO: centrar mapa al subscribirse en el oninit (es posible?)
+
+  public defineEstacionCercana(longitud_actual?: number, latitud_actual?: number): void {
     this.getUbicaciones().subscribe((ubicaciones: Ubicacion[]) => {
       //encontramos las coordenadas de la estacion mas cercana
       const latLng_estacion_cercana = ubicaciones
         .map(e => { return [Number(e.latitud), Number(e.longitud)] })
         .reduce((coordenadaMasCercana, coordenadaActual) => {
+          longitud_actual ==null? longitud_actual = this.location[1]:longitud_actual;
+          latitud_actual ==null? latitud_actual = this.location[0]:longitud_actual;
+
           const lonLatActual = Math.sqrt(
             Math.pow(coordenadaActual[0] - latitud_actual, 2) + Math.pow(coordenadaActual[1] - longitud_actual, 2)
           );
@@ -85,6 +93,9 @@ export class CombustibleService {
           );
           return lonLatActual < lonLatCercana ? coordenadaActual : coordenadaMasCercana;
         });
+
+        console.log("ubicacion actual: "+latitud_actual+longitud_actual)
+        console.log("estacion mas cercana: "+latLng_estacion_cercana)
 
       this.setEstacionActual(latLng_estacion_cercana[0], latLng_estacion_cercana[1])
     })
