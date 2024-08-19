@@ -87,9 +87,6 @@ export class CombustibleService {
           return lonLatActual < lonLatCercana ? coordenadaActual : coordenadaMasCercana;
         });
 
-        console.log("ubicacion actual: "+latitud_actual+longitud_actual)
-        console.log("estacion mas cercana: "+latLng_estacion_cercana)
-
       this.setEstacionActual(latLng_estacion_cercana[0], latLng_estacion_cercana[1])
     })
   }

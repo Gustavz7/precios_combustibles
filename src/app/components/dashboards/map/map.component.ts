@@ -19,8 +19,6 @@ import {
 import { CombustibleService } from '../../../services/combustible.service';
 import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { Estacion, Ubicacion } from '../../../model/estaciones';
-import { MarkerEstacion } from '../../../model/marker_estaciones';
-import { publishFacade } from '@angular/compiler';
 
 @Component({
   selector: 'app-map',
