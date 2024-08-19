@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, defineInjectable, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CombustibleService } from '../../../services/combustible.service';
 import { Combustible, Estacion } from '../../../model/estaciones';
@@ -22,8 +22,9 @@ export class PricesComponent implements OnInit, OnDestroy {
   estacionActual: Estacion = new Estacion();
 
   src_copec: string =
-    'https://www.google.com/url?sa=i&url=https%3A%2F%2Fww2.copec.cl%2Fpersonas%2Festaciones-de-servicio&psig=AOvVaw1cnogF93XsDmOa-7D4YGCb&ust=1723865301697000&source=images&cd=vfe&opi=89978449&ved=2ahUKEwiWw-3oyPiHAxW8BLkGHcjaA20QjRx6BAgAEBY';
-  src_shell: string ='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMoM7KFejzkgQUZErB8u7WgBKZo2peO_mwNw&s'
+    'https://th.bing.com/th/id/OIP.OlbJwLagnfWNxVjKcpSB-AHaDt?rs=1&pid=ImgDetMain';
+  src_shell: string =
+    'https://th.bing.com/th/id/OIP.4Mo_UpBJ0b4-uYcPxzKk0QHaEA?rs=1&pid=ImgDetMain';
   src_petrobras: string =
     'https://www.petrobrasdistribucion.cl/wp-content/uploads/2023/01/DJI_0319-HDR-scaled-1600x800.jpg';
   src_unknown: string =
@@ -48,6 +49,7 @@ export class PricesComponent implements OnInit, OnDestroy {
         if (precios.hasOwnProperty(key)) {
           this.combustiblesInfo?.push(
             new Combustible(
+              this.setCategoria(key),
               key,
               precios[key].unidad_cobro,
               precios[key].precio,
@@ -60,17 +62,43 @@ export class PricesComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  private setCategoria(tipoCombustible: string): string {
+    let result = 'GASOLINA';
+
+    switch (tipoCombustible) {
+      case '93':
+      case '95':
+      case '97':
+        break;
+
+      case 'DI':
+      case 'ADI':
+        result = 'PETROLEO';
+        break;
+
+      case 'KE':
+      case 'AKE':
+        result = 'KEROSENO';
+        break;
+
+      default:
+        break;
+    }
+
+    return result;
+  }
   setDetallesEstacionActual(estacion: Estacion) {
     this.estacionActual = estacion;
 
-    switch (this.estacionActual.distribuidor.imagen) {
+    switch (this.estacionActual.distribuidor.marca) {
       case 'COPEC':
         this.estacionActual.distribuidor.imagen = this.src_copec;
         break;
       case 'SHELL':
         this.estacionActual.distribuidor.imagen = this.src_shell;
         break;
-      case 'PRETROBRAS':
+      case 'PETROBRAS':
         this.estacionActual.distribuidor.imagen = this.src_petrobras;
         break;
       default:

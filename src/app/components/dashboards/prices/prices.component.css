@@ -28,7 +28,7 @@
 .card-details {
   width: 100%;
   height: 75%;
-  border: 5px solid;
+  border-top: 5px solid;
   border-color: rgb(204, 204, 204);
 }
 
@@ -38,12 +38,12 @@
   background-color: red;
   align-self: flex-start;
   overflow: hidden;
-
 }
-.distribuidor-img{
+.distribuidor-img {
   min-width: 200px;
-  height: 100%;
-  width: auto;
+  height: auto;
+  width: 100%;
+  overflow: hidden;
 }
 .distribuidor-logo {
   max-width: 100px;
@@ -54,15 +54,71 @@
 }
 
 .distribuidor-text-container {
-  background-color: blue;
   width: 100%;
   height: 10%;
+  display: flex;
+  align-items: center;
+}
+.distribuidor-text {
+  margin: auto;
 }
 
 .distribuidor-prices-container {
-  margin: auto 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.prices-list {
+  max-height: 500px;
+  font-family: "Raleway", sans-serif;
+
+  list-style: none;
+  padding-left: 0;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.price-list-item {
+  background: white;
+  border-radius: 0 0.5rem 0.5rem 0.5rem;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.list-item-gas-type {
+  display: inline;
+  color: #292929;
+  line-height: 20px;
+  border-radius: 20%;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+
+.item-gas {
+  border: 2px solid #0bad02;
+}
+
+.item-petrol {
+  border: 2px solid #2378D5;
+}
+
+.item-kerosene {
+  border: 2px solid #000a74;
+}
+
+.item-electric {
+  border: 2px solid #02ad9f;
+}
+.item-glp {
+  border: 2px solid #ad9902;
+}
+.list-item-gas-type p {
+  display: inline;
+  font-size: 32px;
 }

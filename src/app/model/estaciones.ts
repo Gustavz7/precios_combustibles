@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs';
 export class EstacionesData {
     estacion: Estacion[] | undefined;
     constructor() {
@@ -78,6 +79,7 @@ export interface MetodosDePago {
 
 
 export class Combustible {
+    categoria: string;
     nombre: string;
     unidad_cobro: UnidadCobro;
     precio: string;
@@ -85,7 +87,8 @@ export class Combustible {
     hora_actualizacion: string;
     tipo_atencion: TipoAtencion;
 
-    constructor(nombre: string, unidad_cobro: UnidadCobro, precio: string, fecha_actualizacion: Date, hora_actualizacion: string, tipo_atencion: TipoAtencion) {
+    constructor(categoria:string, nombre: string, unidad_cobro: UnidadCobro, precio: string, fecha_actualizacion: Date, hora_actualizacion: string, tipo_atencion: TipoAtencion) {
+        this.categoria = categoria;
         this.nombre = nombre;
         this.unidad_cobro = unidad_cobro;
         this.precio = precio;

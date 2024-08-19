@@ -2,22 +2,29 @@
   <div class="prices-card">
     <div class="card-img">
       <div class="distribuidor-img-container">
-        <img class="distribuidor-img" src="{{estacionActual.distribuidor.imagen}}"/>
+        <img class="distribuidor-img" src="{{estacionActual.distribuidor.imagen}}" />
         <img class="distribuidor-logo" src="{{ estacionActual.distribuidor.logo }}"
           alt="{{ estacionActual.distribuidor.marca }}" />
       </div>
     </div>
     <div class="distribuidor-text-container">
-      {{ estacionActual.distribuidor.marca }}
+      <div class="distribuidor-text">
+        {{ estacionActual.distribuidor.marca }}
+      </div>
     </div>
 
     <div class="card-details">
       <div class="distribuidor-prices-container" *ngIf="combustiblesInfo.length > 1; else cargando">
-        {{estacionActual.ubicacion.latitud}} - {{estacionActual.ubicacion.longitud}} ({{estacionActual.ubicacion.nombre_comuna}})
-        <mat-list *ngFor="let combustible of combustiblesInfo; let i = index">
-          <mat-list-item> {{ combustible.nombre }} {{ combustible.precio | currency }}</mat-list-item>
-          <mat-divider></mat-divider>
-        </mat-list>
+        {{estacionActual.ubicacion.direccion}} - {{estacionActual.ubicacion.nombre_comuna}}
+        ({{estacionActual.ubicacion.nombre_comuna}})
+        <ol class="prices-list">
+          <li class="price-list-item" *ngFor="let combustible of combustiblesInfo; let i = index">
+            <div class="list-item-gas-type"
+              [ngClass]="{'item-gas': combustible.categoria === 'GASOLINA', 'item-petrol': combustible.categoria === 'PETROLEO', 'item-kerosene': combustible.categoria === 'KEROSENO', 'item-glp': combustible.categoria === 'GLP'}">
+              <span>{{ combustible.nombre }}</span>
+            </div> {{ combustible.precio | currency }}
+          </li>
+        </ol>
       </div>
     </div>
 
