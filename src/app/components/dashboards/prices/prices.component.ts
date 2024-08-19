@@ -83,6 +83,7 @@ export class PricesComponent implements OnInit, OnDestroy {
         break;
 
       default:
+        result = tipoCombustible;
         break;
     }
 
