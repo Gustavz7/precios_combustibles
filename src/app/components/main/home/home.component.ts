@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { PricesComponent } from "../dashboards/prices/prices.component";
-import { MapComponent } from "../dashboards/map/map.component";
+import { PricesComponent } from "../prices/prices.component";
+import { MapComponent } from "../map/map.component";
 
 @Component({
   selector: 'app-home',

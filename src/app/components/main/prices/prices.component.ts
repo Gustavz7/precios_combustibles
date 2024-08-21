@@ -1,10 +1,9 @@
-import { Component, defineInjectable, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CombustibleService } from '../../../services/combustible.service';
-import { Combustible, Estacion } from '../../../model/estaciones';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import { Combustible, Estacion } from '../../../core/model/classes/estaciones';
+import { CombustibleService } from '../../../core/services/combustible-service/combustible.service';
 
 @Component({
   selector: 'app-prices',

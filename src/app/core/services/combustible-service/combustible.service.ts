@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of, reduce, tap, throwError } from 'rxjs';
-import { Estacion, EstacionesData, Combustible, CombustibleI, Ubicacion } from '../model/estaciones';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { Estacion, Ubicacion } from '../../model/classes/estaciones';
 
 @Injectable({
   providedIn: 'root'

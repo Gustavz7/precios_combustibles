@@ -1,24 +1,19 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
-  OnChanges,
   OnInit,
-  SimpleChanges,
   ViewChild,
-  ViewEncapsulation,
+  ViewEncapsulation
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   GoogleMap,
   GoogleMapsModule,
   MapAdvancedMarker,
-  MapInfoWindow,
-  MapMarker,
-  MapMarkerClusterer,
+  MapInfoWindow
 } from '@angular/google-maps';
-import { CombustibleService } from '../../../services/combustible.service';
-import { BehaviorSubject, filter, map, Observable } from 'rxjs';
-import { Estacion, Ubicacion } from '../../../model/estaciones';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Estacion, Ubicacion } from '../../../core/model/classes/estaciones';
+import { CombustibleService } from '../../../core/services/combustible-service/combustible.service';
 
 @Component({
   selector: 'app-map',

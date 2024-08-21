@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { LoginService } from '../../services/login/login.service';
+import { LoginService } from '../../core/services/login-service/login.service';
 
 @Component({
   selector: 'app-login',
