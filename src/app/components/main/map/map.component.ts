@@ -13,7 +13,7 @@ import {
 } from '@angular/google-maps';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Estacion, Ubicacion } from '../../../core/model/classes/estaciones';
-import { CombustibleService } from '../../../core/services/combustible-service/combustible.service';
+import { EstacionService } from '../../../core/services/estacion-service/estacion.service';
 
 @Component({
   selector: 'app-map',
@@ -28,7 +28,7 @@ import { CombustibleService } from '../../../core/services/combustible-service/c
 export class MapComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   @ViewChild(GoogleMap) map!: GoogleMap;
-  constructor(private combustibleService: CombustibleService) {}
+  constructor(private estacionService: EstacionService) { }
 
   //coordenadas entregadas por el navegador
   //user_position: any = { lat: this.latitude, lng: this.longitude }; -
@@ -74,7 +74,7 @@ export class MapComponent implements OnInit {
       'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 
     //nos suscribimos a la estaciona actual para poder mover el centro del mapa
-    this.combustibleService.estacionCercana$.subscribe((next) => {
+    this.estacionService.estacionCercana$.subscribe((next) => {
       const lat = Number(next.ubicacion.latitud);
       const lng = Number(next.ubicacion.longitud);
       if (lat != 0 && lng != 0) {
@@ -86,7 +86,7 @@ export class MapComponent implements OnInit {
     });
 
     //nos guardamos los detalles de la ubicacion actual y de la estacion cercana
-    this.combustibleService.estacionCercana$.subscribe((data: Estacion) => {
+    this.estacionService.estacionCercana$.subscribe((data: Estacion) => {
       this.detalles_ubicacion = data.ubicacion;
       this.marker_estacion_cercana.lat = Number(data.ubicacion.latitud);
       this.marker_estacion_cercana.lng = Number(data.ubicacion.longitud);
@@ -103,7 +103,7 @@ export class MapComponent implements OnInit {
   }
 
   onMarkerClick(marker: MapAdvancedMarker, position: any) {
-    this.combustibleService
+    this.estacionService
       .getEstacion(position.lat, position.lng)
       .subscribe((estacion) => {
         this.infoWindow.open(
@@ -113,7 +113,7 @@ export class MapComponent implements OnInit {
         );
 
         //tambien debe actualizar los valores del componente precios
-        this.combustibleService.setEstacionActual(
+        this.estacionService.setEstacionActual(
           position.lat,
           position.lng,
           estacion
@@ -122,7 +122,7 @@ export class MapComponent implements OnInit {
   }
 
   mapLocations() {
-    this.combustibleService.getEstaciones().subscribe((ele: Estacion[]) => {
+    this.estacionService.getEstaciones().subscribe((ele: Estacion[]) => {
       ele.forEach((estacion: Estacion) => {
         const lat = Number(estacion.ubicacion.latitud);
         const lng = Number(estacion.ubicacion.longitud);

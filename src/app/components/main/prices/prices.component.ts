@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { Combustible, Estacion } from '../../../core/model/classes/estaciones';
-import { CombustibleService } from '../../../core/services/combustible-service/combustible.service';
+import { EstacionService } from '../../../core/services/estacion-service/estacion.service';
 
 @Component({
   selector: 'app-prices',
@@ -14,7 +14,7 @@ import { CombustibleService } from '../../../core/services/combustible-service/c
 })
 export class PricesComponent implements OnInit, OnDestroy {
   //inyectamos las dependencias a usarse en esta clase
-  constructor(private combustibleService: CombustibleService) {}
+  constructor(private estacionService: EstacionService) {}
 
   //localizacion del usuario
   combustiblesInfo: Combustible[] = new Array<Combustible>();
@@ -37,9 +37,9 @@ export class PricesComponent implements OnInit, OnDestroy {
 
   obtenerDetallesEstacion(): void {
     this.combustiblesInfo = new Array<Combustible>();
-    this.combustibleService.defineEstacionCercana();
+    this.estacionService.defineEstacionCercana();
 
-    this.combustibleService.estacionCercana$.subscribe((estacion: Estacion) => {
+    this.estacionService.estacionCercana$.subscribe((estacion: Estacion) => {
       this.setDetallesEstacionActual(estacion);
       const precios = estacion.precios;
       this.combustiblesInfo = new Array<Combustible>();
